@@ -1,0 +1,11 @@
+RAW GRAPH
+Node 0
+Node 1
+Node 2
+Node 3
+Node 4
+
+
+TOPO SORT
+The graph can be topologically sorted as follows:
+0 1 2 3 4 

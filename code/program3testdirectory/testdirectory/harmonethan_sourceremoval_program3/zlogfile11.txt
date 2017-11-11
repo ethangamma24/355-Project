@@ -1,0 +1,5 @@
+Beginning execution
+infile  'xingraph11.txt'
+outfile 'zoutfile11.txt'
+logfile 'zlogfile11.txt'
+Ending execution

@@ -1,0 +1,215 @@
+#include "graphcode.h"
+
+/******************************************************************************
+ *3456789 123456789 123456789 123456789 123456789 123456789 123456789 123456789
+ * Author: Duncan A. Buell
+ * Edited by Ethan Harmon
+ * Date last modified: 1 November 2016
+**/
+
+static const string TAG = "GraphCode: ";
+
+/******************************************************************************
+ * Constructor
+**/
+GraphCode::GraphCode() {
+}
+
+/******************************************************************************
+ * Destructor
+**/
+GraphCode::~GraphCode() {
+}
+
+/******************************************************************************
+ * Accessors and Mutators
+**/
+
+/******************************************************************************
+ * General functions.
+**/
+
+/******************************************************************************
+ * Function 'DoTopoSort'.
+ *
+ * Parameter:
+ *   out_stream -- the output stream to which to write the eventual result
+**/
+void GraphCode::DoTopoSort(ofstream& out_stream)
+{
+#ifdef EBUG
+  cout << TAG << "enter DoTopoSort\n"; 
+#endif
+  vector<Node>::iterator iter;
+  vector<Node>::const_iterator iter2;
+  cout << "Entering DoTopoSort" << endl;
+  /*for (iter = the_graph_.begin(); iter != the_graph_.end(); ++iter) {
+    if ((*iter).GetNumberOfChildren() != 0) {
+      childSubs = (*iter).GetChildSubs();
+      for (int i = 0; i < childSubs.size(); i++) {
+        child = childSubs.back();
+        childSubs.pop_back();
+        (*iterChild) = child;
+    }
+  }*/
+  for (iter = the_graph_.begin(); iter != the_graph_.end(); ++iter) {
+    cout << "Entering first for loop for Node " << (*iter).GetNodeNumber() << endl;
+    for (iter2 = the_graph_.begin(); iter2 != the_graph_.end(); ++iter2) {
+    cout << "Entering second for loop looking at Node " << (*iter2).GetNodeNumber() << " for its children." << endl;
+      vector<int> childSubs = (*iter2).GetChildSubs();
+      for (int i = 0; i < childSubs.size(); i++) {
+        cout << "Child " << i << endl;
+        if (childSubs[i] == (*iter).GetNodeNumber()) {
+          (*iter).IncrementIncoming();
+          cout << "Called IncrementIncoming()" << endl;
+          break;
+        }
+      }
+    }
+  }
+  cout << "Done with finding incoming edges." << endl << endl;
+
+  vector<Node> noIncoming;
+  vector<Node> noIncomingReverse;
+  vector<Node> thePath;
+  vector<Node> thePathReverse;
+  int count = 0;
+
+  for (iter = the_graph_.begin(); iter != the_graph_.end(); ++iter) {
+    if ((*iter).GetIncomingCount() == 0) {
+      noIncoming.push_back((*iter));
+      (*iter).SetVisited(true);
+      count++;
+      cout << (*iter).GetNodeNumber() << endl;
+    }
+  }
+
+  cout << "Entering while loop" << endl;
+  while (!noIncoming.empty()) {
+    for (int i = 0; i < noIncoming.size(); i++) {
+      noIncomingReverse.push_back(noIncoming[i]);
+    }
+
+    Node node = noIncomingReverse.back();
+    noIncomingReverse.pop_back();
+    thePath.push_back(node);
+
+    vector<Node>::const_iterator iter3;
+    for (iter3 = the_graph_.begin(); iter3 != the_graph_.end(); ++iter3) {
+      vector<int> childSubs = (*iter3).GetChildSubs();
+      if (--childSubs[(*iter3).GetNodeNumber()] == 0) {
+        noIncoming.push_back(*iter3);
+      }
+    }
+
+    if (count != the_graph_.size()) {
+      cout << "This graph contains a cycle,"
+           << "and cannot be topologically sorted." << endl;
+      return;
+    }
+
+    cout << "The graph can be topologically sorted as follows:" << endl;
+
+    vector<Node>::const_iterator iter4;
+    for (iter4 = thePath.begin(); iter4 != thePath.end(); ++iter4) {
+      cout << (*iter4).GetNodeNumber() << " ";
+    }
+
+    /*for(int i = 0; i < thePath.size(); i++)
+    {
+      thePath [i]*/ 
+    return;
+  }
+#ifdef EBUG
+  cout << TAG << "leave DoTopoSort\n"; 
+#endif
+
+} // void GraphCode::DoTopoSort()
+
+/******************************************************************************
+ * Function 'ReadGraph'.
+ * We read data from the input stream and create a graph.
+ *
+ * The only thing tricky about this is to make sure we have all the nodes
+ * accounted for in the 'vector' since we use the subscript also as the node
+ * number. That's the reason for reading in the beginning and ending node
+ * numbers and creating an initial dummy 'vector'.
+ *
+ * Parameter:
+ *     in_stream - the 'Scanner' from which to read
+**/
+void GraphCode::ReadGraph(Scanner& in_stream) {
+  ScanLine scanline;
+
+#ifdef EBUG
+  cout << TAG << "enter ReadGraph" << endl; 
+#endif
+
+  int first_node, last_node;
+  if (in_stream.HasNext()) {
+    first_node = in_stream.NextInt();
+    last_node = in_stream.NextInt();
+    assert ( 0 == first_node);
+    // Note that we read inclusive through the 'lastNode' value.
+    // Create a 'vector' of dummy nodes just so our 'vector' is of the
+    //     right length.
+    for(int i = 0; i <= last_node; ++i) {
+      Node node = Node(i);
+      the_graph_.push_back(node);
+    }
+  } else {
+    Utils::log_stream << TAG << "Terminating. No data in input file." << endl; 
+  }
+
+  // Read line by line, one line for each node.
+  // Use each line to create a 'ScanLine'.
+  // Then parse each 'scanLine' instance to get the child node numbers.
+  // And add each child node number to the children for the node in question.
+  while (in_stream.HasNext()) {
+    string the_line = in_stream.NextLine();
+    scanline.OpenString(the_line);
+    int parent_node_num = scanline.NextInt();
+    Node node = the_graph_.at(parent_node_num);
+    while( scanline.HasNext()) {
+      int the_child = scanline.NextInt();
+
+      node.AddChildSub(the_child);
+    }
+    this->the_graph_.at(parent_node_num) = node;
+  }
+
+#ifdef EBUG
+  cout << TAG << "leave ReadGraph " << endl;
+#endif
+} // void GraphCode::ReadGraph(Scanner& in_stream)
+
+/******************************************************************************
+ * Function 'ToString'.
+ * This is the usual 'ToString'. We output the 'vector' of 'Record'
+ * instances without regard to the order.
+ *
+ * Returns:
+ *   a formatted 'string' version of the 'vector' of records
+**/
+string GraphCode::ToString() const {
+  string s = "";
+#ifdef EBUG
+  cout << TAG << "enter ToString\n"; 
+#endif
+
+  if (0 == the_graph_.size()) {
+    s += "There are no nodes\n";
+  } else {
+    vector<Node>::const_iterator iter;
+    for(iter = the_graph_.begin(); iter != the_graph_.end(); ++iter) {
+      s += "Node " + (*iter).ToString();
+      s += "\n";
+    }
+    s += "\n";
+  }
+
+#ifdef EBUG
+  cout << TAG << "leave ToString\n"; 
+#endif
+  return s;
+} // string GraphCode::ToString() const

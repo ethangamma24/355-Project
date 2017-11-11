@@ -1,0 +1,6 @@
+UTILS: open the logfile 'zlogfilePRQ.txt'
+UTILS: open succeeded for 'zlogfilePRQ.txt'
+UTILS: open the output file 'zoutfilePRQ.txt'
+UTILS: open succeeded for 'zoutfilePRQ.txt'
+UTILS: open the input file '/acct/eharmon/Documents/Project_3/program3testdirectory/mydirectory/harmonethan_sourceremoval_program3/xingraphPRQ.txt'
+UTILS: open failed for '/acct/eharmon/Documents/Project_3/program3testdirectory/mydirectory/harmonethan_sourceremoval_program3/xingraphPRQ.txt'

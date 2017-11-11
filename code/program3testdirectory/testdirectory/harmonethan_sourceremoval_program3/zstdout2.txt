@@ -1,0 +1,6 @@
+UTILS: open the logfile 'zlogfile2.txt'
+UTILS: open succeeded for 'zlogfile2.txt'
+UTILS: open the output file 'zoutfile2.txt'
+UTILS: open succeeded for 'zoutfile2.txt'
+UTILS: open the input file '/acct/eharmon/Documents/Project_3/program3testdirectory/mydirectory/harmonethan_sourceremoval_program3/xingraph2.txt'
+UTILS: open failed for '/acct/eharmon/Documents/Project_3/program3testdirectory/mydirectory/harmonethan_sourceremoval_program3/xingraph2.txt'
