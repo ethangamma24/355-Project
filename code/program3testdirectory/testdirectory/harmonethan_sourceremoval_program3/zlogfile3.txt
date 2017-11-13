@@ -1,5 +1,0 @@
-Beginning execution
-infile  'xingraph3.txt'
-outfile 'zoutfile3.txt'
-logfile 'zlogfile3.txt'
-Ending execution

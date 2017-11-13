@@ -1,9 +1,0 @@
-#!/bin/bash
-
-./zaZipUpScript.txt
-./zbFileCopyScript.txt
-./zcCompileScript.txt
-./zdExecuteScript.txt
-
-cd testdirectory/harmonethan_program2/
-./Aprog xpidigitssplit.txt xpatternpidigits

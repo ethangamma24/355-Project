@@ -1,5 +1,0 @@
-Beginning execution
-infile  'xingraphPRQ.txt'
-outfile 'zoutfilePRQ.txt'
-logfile 'zlogfilePRQ.txt'
-Ending execution
